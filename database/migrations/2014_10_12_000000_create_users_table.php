@@ -17,12 +17,13 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('phone_number', 12)->nullable();
-            $table->string('avatar')->default('no-image.svg');
+            $table->string('avatar')->default('avatar-image.png');
+            $table->string('image_cover')->default('image-cover.jpeg');
+            $table->string('address')->nullable();
             $table->text('description')->nullable();
-            $table->tinyInteger('status');
+            $table->boolean('is_active')->default(true);
             $table->bigInteger('role_id')->unsigned();
             $table->rememberToken();
             $table->timestamps();

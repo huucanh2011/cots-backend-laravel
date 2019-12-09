@@ -15,14 +15,17 @@ class CreateTourOrdersTable extends Migration
     {
         Schema::create('tour_orders', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->dateTime('date_order')->nullable();
+            $table->string('customer_name');
+            $table->string('customer_email');
+            $table->string('customer_phone_number');
+            $table->string('customer_address');
             $table->tinyInteger('quantity_people')->unsigned();
             $table->double('total', 15, 2)->unsigned();
-            $table->text('note');
-            $table->boolean('allow');
-            $table->dateTime('date_allow')->nullable();
-            $table->bigInteger('tour_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
+            $table->text('note')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->dateTime('date_active')->nullable();
+            $table->bigInteger('tour_detail_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

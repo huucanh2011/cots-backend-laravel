@@ -5,8 +5,11 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Notifications\ResetPasswordRequest;
 
-class User extends Authenticatable
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
+class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
@@ -30,14 +33,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function role()
+    // JWT
+    public function getJWTIdentifier()
     {
-        return $this->belongsTo('App\Role');
+        return $this->getKey();
     }
 
-    //Xem lại chat
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
-    //Xem lại đánh giá
+    public function role()
+    {
+        return $this->belongsTo('App\Role', 'role_id', 'id');
+    }
 
     public function likes()
     {
@@ -62,5 +72,10 @@ class User extends Authenticatable
     public function tours()
     {
         return $this->hasMany('App\Tour', 'user_id', 'id');
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordRequest($token));
     }
 }

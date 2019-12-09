@@ -17,7 +17,7 @@ class CreatePostsTable extends Migration
             $table->bigIncrements('id');
             $table->text('post_content');
             $table->tinyInteger('post_scores');
-            $table->tinyInteger('status');
+            $table->boolean('is_active')->default(true);
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('location_id')->unsigned();
             $table->timestamps();

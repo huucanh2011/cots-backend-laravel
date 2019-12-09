@@ -21,8 +21,8 @@ class Tour extends Model
         return $this->hasMany('App\ImageTour', 'tour_id', 'id');
     }
 
-    public function tourOrders()
+    public function dateDepartureTour()
     {
-        return $this->hasMany('App\TourOrder', 'tour_id', 'id');
+        return $this->hasMany('App\DateDepartureTour', 'tour_id', 'id');
     }
 }

@@ -12,7 +12,7 @@ class TourOrder extends Model
     	return $this->belongsTo('App\User','user_id','id');
     }
 
-    public function tour(){
-    	return $this->belongsTo('App\Tour','tour_id','id');
+    public function dateDepartureTour(){
+    	return $this->belongsTo('App\DateDepartureTour','date_departure_tour_id','id');
     }
 }

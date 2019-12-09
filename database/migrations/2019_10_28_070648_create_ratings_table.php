@@ -19,6 +19,7 @@ class CreateRatingsTable extends Migration
             $table->tinyInteger('rating_scores');
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('partner_id')->unsigned();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

@@ -17,8 +17,8 @@ class CreateLocationsTable extends Migration
             $table->bigIncrements('id');
             $table->string('location_name');
             $table->string('address');
-            $table->string('image_cover');
             $table->text('description');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
