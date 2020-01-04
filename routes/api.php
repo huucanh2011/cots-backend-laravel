@@ -6,13 +6,13 @@
 //     return $request->user();
 // });
 
-// header('Access-Control-Allow-Origin: *');
-// header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
-// // add any additional headers you need to support here
-// header('Access-Control-Allow-Headers: Origin, Content-Type,X-Requested-With,Authorization');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
+// add any additional headers you need to support here
+header('Access-Control-Allow-Headers: Origin, Content-Type,X-Requested-With,Authorization');
 // header('Access-Control-Allow-Credentials': true)
 
-Route::group(['middleware' => 'cors', 'prefix' => 'v1'], function () {
+Route::group(['prefix' => 'v1'], function () {
     Route::group(['namespace' => 'Api', 'prefix' => 'auth'], function () {
         Route::post('login', 'AuthController@login'); 
         Route::post('register', 'AuthController@register');
