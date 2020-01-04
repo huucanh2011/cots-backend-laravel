@@ -12,11 +12,7 @@
 // header('Access-Control-Allow-Headers: Origin, Content-Type,X-Requested-With,Authorization');
 // header('Access-Control-Allow-Credentials': true)
 
-Route::group(['middleware' => ['groupName']], function () {
-    
-});
-
-Route::group(['middleware' => ['cors']], ['prefix' => 'v1'], function () {
+Route::group(['middleware' => 'cors', 'prefix' => 'v1'], function () {
     Route::group(['namespace' => 'Api', 'prefix' => 'auth'], function () {
         Route::post('login', 'AuthController@login'); 
         Route::post('register', 'AuthController@register');
