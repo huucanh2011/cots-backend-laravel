@@ -68,6 +68,9 @@ class Kernel extends HttpKernel
 
         //admin
         'admin' => \App\Http\Middleware\CheckAdmin::class,
+
+        'cors' => \App\Http\Middleware\CROS::class,
+
     ];
 
     /**
