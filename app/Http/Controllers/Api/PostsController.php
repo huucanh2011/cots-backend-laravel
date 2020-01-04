@@ -6,26 +6,30 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\Validator;
 use App\Post;
+use App\ImagePost;
+use App\Comment;
+use App\Like;
+use DB;
 
 class PostsController extends ApiController
 {
     public function __construct()
     {
-        $this->middleware('jwt.auth', ['except' => ['index', 'postHome', 'show']]);
+        $this->middleware('jwt.auth', ['except' => ['index', 'indexHome', 'show']]);
         $this->middleware('admin', ['only' => ['block']]);
     }
 
     public function index()
     {
-        $posts = Post::with('user', 'location')->latest()->paginate(10);
+        $posts = Post::with('user', 'location', 'likes')->latest()->paginate(10);
 
         return $this->respond($posts);
     }
 
-    public function postHome()
+    public function indexHome()
     {
-        $posts = Post::with('user', 'location')->where('is_active', 1)->latest()->get();
-
+        $posts = Post::with('user', 'location', 'imagePosts', 'likes')->where('is_active', 1)->latest()->paginate(5);
+        
         return $this->respond($posts);
     }
 
@@ -66,7 +70,7 @@ class PostsController extends ApiController
             'user_id' => auth()->user()->id
         ]);
 
-        return $this->respond($post);
+        return $this->respond(Post::with('user', 'location', 'imagePosts', 'likes')->findOrFail($post->id));
     }
 
     public function show($id)
@@ -78,11 +82,7 @@ class PostsController extends ApiController
 
     public function update(Request $request, $id)
     {
-        $post = Post::findOrFail($id);
-
-        if ($post->user_id != auth()->user()->id) {
-            return $this->respondUnauthorized();
-        }
+        $post = Post::with('user', 'location', 'imagePosts', 'likes')->findOrFail($id);
 
         $post->update($request->all());
 
@@ -92,11 +92,6 @@ class PostsController extends ApiController
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
-
-        if ($post->user_id != auth()->user()->id) {
-            return $this->respondUnauthorized();
-        }
-
         $post->delete();
 
         return response()->json([
@@ -106,7 +101,7 @@ class PostsController extends ApiController
 
     public function block(Request $request)
     {
-        $post = Post::findOrFail($request->id);
+        $post = Post::with('user', 'location', 'imagePosts', 'likes')->findOrFail($request->id);
         $post->update(['is_active' => $request->is_active]);
 
         return $this->respond($post);

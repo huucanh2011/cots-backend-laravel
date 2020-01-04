@@ -54,6 +54,14 @@ class RolesController extends ApiController
 
     public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'role_name' => 'required|unique:roles|string|max:255',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
         $role = Role::findOrFail($id);
         $role->update($request->all());
 

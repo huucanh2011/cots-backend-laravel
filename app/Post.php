@@ -21,7 +21,7 @@ class Post extends Model
         return $this->hasMany('App\Comment', 'post_id', 'id');
     }
 
-    public function ImagePosts()
+    public function imagePosts()
     {
         return $this->hasMany('App\ImagePost', 'post_id', 'id');
     }

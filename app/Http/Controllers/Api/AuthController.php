@@ -102,12 +102,9 @@ class AuthController extends Controller
         try {
             $userId = auth()->user()->id;
             $user = User::findOrFail($userId);
-
             $user->update($data);
 
-            return response()->json([
-                'message' => 'Updated infomation successfully!'
-            ]);
+            return response()->json($user);
         } catch (Exception $e) {
             return response()->json([ 'message' => $e->getMessage() ]);
         }
@@ -130,10 +127,7 @@ class AuthController extends Controller
                     'avatar' => $name
                 ]);
 
-                return response()->json([
-                    'avatar' => $name,
-                    'message' => 'Updated avatar Successfully!'
-                ]);
+                return response()->json($user->avatar);
             } catch (Exception $e) {
                 return response()->json([ 'message' => $e->getMessage() ]);
             }

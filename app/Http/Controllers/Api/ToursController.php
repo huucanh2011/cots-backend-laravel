@@ -9,12 +9,13 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\DateDepartureTour;
 use App\Tour;
+use DB;
 
 class ToursController extends ApiController
 {
     public function __construct()
     {
-        $this->middleware('jwt.auth', ['except' => ['index', 'show', 'getDate']]);
+        $this->middleware('jwt.auth', ['except' => ['index', 'search', 'show', 'getDate']]);
     }
 
     public function index()
@@ -27,6 +28,28 @@ class ToursController extends ApiController
     public function indexPartner() {
         $userId = auth()->user()->id;
         $tours = Tour::with('user', 'tourCate')->where('user_id', $userId)->latest()->paginate(10);
+
+        return $this->respond($tours);
+    }
+
+    public function search(Request $request) {
+        $searchText = $request['q'];
+        $cate = $request['cate'];
+        $tours = Tour::where('is_active', 1);
+
+        if($cate != null && $cate != 0) {
+            $tours = $tours->where('tourcate_id', $request['cate']);
+        }
+        
+        if($searchText) {
+            $tours = $tours->where(function($query) use($searchText) {
+                $query->where('tour_name', 'LIKE', '%'.$searchText.'%')
+                    ->orwhere('from_place', 'LIKE', '%'.$searchText.'%')
+                    ->orwhere('to_place', 'LIKE', '%'.$searchText.'%');
+            });        
+        }
+
+        $tours = $tours->orderBy('created_at', 'desc')->paginate(9);
 
         return $this->respond($tours);
     }
@@ -110,7 +133,7 @@ class ToursController extends ApiController
 
     public function blockTour(Request $request)
     {
-        $tour = Tour::findOrFail($request->id);
+        $tour = Tour::with('tourCate')->findOrFail($request->id);
         $tour->update([
             'is_active' => $request->is_active
         ]);
@@ -121,6 +144,7 @@ class ToursController extends ApiController
     public function getDate($id)
     {
         $dateDepartureTours = DateDepartureTour::with('tour')
+            ->whereDate('date_departure', '>=', now())
             ->where('tour_id', $id)
             ->orderBy('date_departure', 'asc')
             ->get();

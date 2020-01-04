@@ -1,17 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+// use Illuminate\Http\Request;
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();
@@ -43,9 +32,14 @@ Route::group(['prefix' => 'v1'], function () {
             'locations' => 'LocationsController',
             'ratings' => 'RatingsController',
             'image-locations' => 'ImageLocationsController',
-            'image-posts' => 'ImagePostsController',
-            'image-tours' => 'ImageToursController'
+            'image-posts' => 'ImagePostsController'
         ]);
+
+        Route::get('dashboard', 'DashboardController@index');
+        
+        //filter
+        Route::get('filter-tour-orders', 'TourOrdersController@filter');
+
         //block user
         Route::post('block-user', 'DecentralizationController@block');
 
@@ -65,6 +59,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('search-locations', 'LocationsController@search');
         Route::get('search-posts', 'PostsController@search');
         Route::get('search-decentralizations', 'DecentralizationController@search');
+        Route::get('search-tours', 'ToursController@search');
+        Route::get('search-tour-orders-active', 'TourOrdersController@searchActive');
+        Route::get('search-tour-orders-block', 'TourOrdersController@searchBlock');
         //search
         Route::get('search', 'SearchController@search');
 
@@ -75,7 +72,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('top-partner', 'PartnersController@topPartner');
 
         //post-home
-        Route::get('post-home', 'PostsController@postHome');
+        Route::get('index-home', 'PostsController@indexHome');
+
+        //comment-home
+        Route::get('comment-home', 'CommentsController@getCommentHome');
 
         //tour-cate
         Route::get('tour-category', 'TourCatesController@index');
@@ -90,6 +90,8 @@ Route::group(['prefix' => 'v1'], function () {
 
         //count partner block
         Route::get('count-partner-block', 'PartnersController@countBlock');
+
+        Route::get('count-tour-order-block', 'TourOrdersController@countTourOrderBlock');
 
         Route::post('likes', 'LikesController@create');
         Route::get('likes/{id}', 'LikesController@destroy');

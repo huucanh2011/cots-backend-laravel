@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\Validator;
 use App\Location;
 use App\Post;
+use App\ImageLocation;
 use DB;
 
 class LocationsController extends ApiController
@@ -62,9 +63,27 @@ class LocationsController extends ApiController
 
     public function show($id)
     {
-        $location = Location::findOrFail($id);
+        $location = DB::table('locations')
+            ->where('locations.id', $id)
+            ->where('locations.is_active', 1)
+            ->leftJoin('posts', 'posts.location_id', '=', 'locations.id')
+            ->select('locations.location_name', 'locations.description', 'locations.address', DB::raw('AVG(posts.post_scores) as avg_location_scores'))
+            ->groupBy('locations.location_name', 'locations.description', 'locations.address')
+            ->take(1)
+            ->get();
 
-        return $this->respond($location);
+        $imageLocations = ImageLocation::where('location_id', $id)->get();
+
+        $posts = Post::with('user', 'location')
+            ->where('location_id', $id)
+            ->latest()
+            ->paginate(10);
+        
+        return response()->json([
+            'location' => $location[0],
+            'imageLocations' => $imageLocations,
+            'posts' => $posts
+        ]);
     }
 
     public function update(Request $request, $id)

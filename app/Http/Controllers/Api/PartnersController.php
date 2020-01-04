@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\User;
+use App\Tour;
+use App\Rating;
 use DB;
 
 class PartnersController extends ApiController
@@ -68,19 +70,41 @@ class PartnersController extends ApiController
             'role_id' => 2
         ]);
 
-        return $this->respond($partner);
+        return $this->respond(User::with('role')->findOrFail($partner->id));
     }
 
     public function show($id)
     {
-        $partner = User::with('role')->findOrFail($id);
+        $partner = DB::table('users')
+            ->where('users.id', $id)
+            ->where('users.role_id', 2)
+            ->leftJoin('ratings', 'ratings.partner_id', '=', 'users.id')
+            ->select('users.name', 'users.description', 'users.address', 'users.image_cover', DB::raw('AVG(ratings.rating_scores) as avg_partner_scores'))
+            ->groupBy('users.name', 'users.description', 'users.address', 'users.image_cover')
+            ->take(1)
+            ->get();
+
+        $ratings = Rating::with('user')
+            ->where('partner_id', $id)
+            ->latest()
+            ->get();
+
+        $tours = Tour::with('tourCate')
+            ->where('user_id', $id)
+            ->where('is_active', 1)
+            ->latest()
+            ->paginate(4);
         
-        return $this->respond($partner);
+        return response()->json([
+            'partner' => $partner[0],
+            'ratings' => $ratings,
+            'tours' => $tours
+        ]);
     }
 
     public function update(Request $request, $id)
     {
-        $partner = User::findOrFail($id);
+        $partner = User::with('role')->findOrFail($id);
         $partner->update([
             'name' => $request->name,
             'phone_number' => $request->phone_number,

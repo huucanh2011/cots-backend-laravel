@@ -67,7 +67,7 @@ class UsersController extends ApiController
             'role_id' => 3
         ]);
 
-        return $this->respond($user);
+        return $this->respond(User::with('role')->findOrFail($user->id));
     }
 
     public function show($id)
@@ -79,7 +79,7 @@ class UsersController extends ApiController
 
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::with('role')->findOrFail($id);
         $user->update([
             'name' => $request->name,
             'phone_number' => $request->phone_number,

@@ -16,11 +16,6 @@ class Tour extends Model
     	return $this->belongsTo('App\TourCategory','tourcate_id','id');
     }
 
-    public function imageTours()
-    {
-        return $this->hasMany('App\ImageTour', 'tour_id', 'id');
-    }
-
     public function dateDepartureTour()
     {
         return $this->hasMany('App\DateDepartureTour', 'tour_id', 'id');

@@ -16,7 +16,7 @@ class DecentralizationController extends ApiController
 
     public function index()
     {
-        $users = User::with('role')->where('id', '!=', 1)->latest()->paginate(10);
+        $users = User::with('role')->where('id', '!=', 1)->orderBy('role_id', 'asc')->latest()->paginate(10);
 
         return $this->respond($users);
     }
@@ -51,7 +51,7 @@ class DecentralizationController extends ApiController
 
     public function block(Request $request)
     {
-        $user = User::findOrFail($request->id);
+        $user = User::with('role')->findOrFail($request->id);
         $user->update(['is_active' => $request->is_active]);
 
         return $this->respond($user);
