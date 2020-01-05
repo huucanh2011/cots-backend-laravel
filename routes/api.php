@@ -1,16 +1,8 @@
 <?php
 
-// use Illuminate\Http\Request;
-
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
-// add any additional headers you need to support here
-header('Access-Control-Allow-Headers: Origin, Content-Type,X-Requested-With,Authorization');
-// header('Access-Control-Allow-Credentials': true)
+// header('Access-Control-Allow-Origin: *');
+// header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
+// header('Access-Control-Allow-Headers: Origin, Content-Type,X-Requested-With,Authorization');
 
 Route::group(['prefix' => 'v1'], function () {
     Route::group(['namespace' => 'Api', 'prefix' => 'auth'], function () {

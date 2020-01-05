@@ -15,6 +15,7 @@ class CreateDateDepartureToursTable extends Migration
     {
         Schema::create('date_departure_tours', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('date_departure_code');
             $table->date('date_departure');
             $table->bigInteger('tour_id');
             $table->timestamps();

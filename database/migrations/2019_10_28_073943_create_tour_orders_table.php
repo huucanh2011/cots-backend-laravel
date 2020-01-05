@@ -24,7 +24,7 @@ class CreateTourOrdersTable extends Migration
             $table->text('note')->nullable();
             $table->boolean('is_active')->default(true);
             $table->dateTime('date_active')->nullable();
-            $table->bigInteger('tour_detail_id')->unsigned();
+            $table->bigInteger('date_departure_tour_id')->unsigned();
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->timestamps();
         });
